@@ -47,6 +47,7 @@ def main():
     if 'data' not in st.session_state:
         st.session_state.data = {}
     st.title("Visualization of Image Classification Inference")
+    st.markdown("### Inference Time for Each Image")
     chart_holder = st.empty()
     chart_holder1 = st.empty()
     while True:
@@ -56,8 +57,10 @@ def main():
         st.session_state.elapsed_time.append(message["elapsed_time"])
         update_data_with_new_labels(message["labels"])
         chart_holder.line_chart(st.session_state.elapsed_time)
-        chart_holder1.pyplot(plot_data())
+        fig = plot_data()
+        chart_holder1.pyplot(fig)
         time.sleep(1)
+        plt.close(fig)
 
 
 if __name__ == '__main__':
