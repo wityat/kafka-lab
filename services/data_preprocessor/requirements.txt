@@ -1,0 +1,8 @@
+pydantic==1.10.7
+aioredis==2.0.1
+watchdog==2.1.9
+confluent_kafka
+Pillow
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
+torchvision

@@ -1,0 +1,6 @@
+confluent_kafka
+watchdog==2.1.9
+Pillow
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
+torchvision

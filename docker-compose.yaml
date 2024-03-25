@@ -1,0 +1,66 @@
+version: "3"
+services:
+  kafka:
+    hostname: 'kafka'
+    image: 'bitnami/kafka:latest'
+    ports:
+      - '9097:9097'
+      - '9095:9095'
+    environment:
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9097,CONTROLLER://:9093,EXTERNAL://:9095
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9097,EXTERNAL://localhost:9095
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+
+  raw_data_service:
+    hostname: 'raw_data'
+    build:
+      context: .
+      dockerfile: ./services/raw_data_producer/Dockerfile
+    networks:
+      - default
+    volumes:
+      - ./services/raw_data_producer:/code/
+    env_file:
+      - .env
+
+  data_preprocessor_service:
+    hostname: 'data_preprocessor'
+    build:
+      context: ./services
+      dockerfile: data_preprocessor/Dockerfile
+    networks:
+      - default
+    volumes:
+      - ./services/data_preprocessor:/code/
+    env_file:
+      - .env
+
+  ml_service:
+    hostname: 'ML'
+    build:
+      context: ./services
+      dockerfile: ML_processor/Dockerfile
+    networks:
+      - default
+    volumes:
+      - ./services/ML_processor:/code/
+    env_file:
+      - .env
+
+  visualization_service:
+    hostname: 'visualization'
+    build:
+      context: ./services
+      dockerfile: visualization_consumer/Dockerfile
+    networks:
+      - default
+    volumes:
+      - ./services/visualization_consumer:/code/
+    env_file:
+      - .env
+    ports:
+      - "80:80"
