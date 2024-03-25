@@ -14,12 +14,9 @@ producer = RawDataProducer(
 
 def produce_raw_data():
     while True:
-        logging.info("Starting raw data producer again...!")
-        logging.info("Produced new data!")
         producer.produce_data()
-        time.sleep(random.randint(1, 5))
+        time.sleep(1)
 
 
 if __name__ == '__main__':
-    logging.info("Starting raw data producer...!")
     produce_raw_data()

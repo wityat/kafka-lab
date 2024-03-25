@@ -1,31 +1,30 @@
-import base64
-import io
-import logging
-
 import streamlit as st
-from PIL import Image
+import matplotlib.pyplot as plt
 
 
-def display_messages():
-    for message in st.session_state.messages:
-        display_message(message)
-
-chart_holder = st.empty()
-def display_message(message):
-    im = base64.b64decode(message["value"])
-    logging.info(im)
-    b = io.BytesIO(im)
-    b.seek(0)
-    image = Image.open(b)
-    st.image(image, use_column_width=True)
-
-    st.write("Labels and probabilities:")
-    for label, probability in message["labels"]:
-        st.write(f"{label}: {probability}%")
-
-    chart_holder.line_chart(st.session_state.elapsed_time)
+def update_data_with_new_labels(labels):
+    """
+    Обновляет данные для графика на основе новых лейблов.
+    labels - список кортежей вида (label, value)
+    """
+    for label, value in labels:
+        if label in st.session_state.data:
+            st.session_state.data[label] += 1
+        else:
+            st.session_state.data[label] = 1
 
 
+def plot_data():
+    """
+    Создает и отображает график столбцов на основе актуальных данных.
+    """
+    labels = list(st.session_state.data.keys())[:10]
+    values = list(st.session_state.data.values())[:10]
 
+    fig, ax = plt.subplots()
+    ax.bar(labels, values)
+    ax.set_ylabel('Values')
+    ax.set_title('TOP 10 Labels')
 
+    return fig
 

@@ -21,10 +21,10 @@ def main():
     while True:
         image = consumer.consume_data()
         st_time = time.perf_counter()
-        logging.info("Predicting new data!")
+        logging.warning("Predicting new data!")
         labels = predict_image_labels(image)
         elapsed_time = time.perf_counter() - st_time
-        logging.info(f"elapsed time: {elapsed_time}")
+        logging.warning(f"elapsed time: {elapsed_time}")
         producer.produce_data(image.read(), labels, elapsed_time)
 
 

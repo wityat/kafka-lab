@@ -11,7 +11,7 @@ class VisualizationConsumer(Consumer):
 
     def consume_data(self):
         while True:
-            msg = self.poll(1.0)
+            msg = self.poll(1000)
             if msg is None:
                 continue
             if msg.error():
