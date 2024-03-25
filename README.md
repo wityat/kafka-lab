@@ -5,12 +5,12 @@ This repository is a solution to the problem of classifying an images by resnet5
 ## Architecture
 
 There are such consumers and producers:
-**RawDataProducer**
-**DataPreprocessConsumer**
-**DataPreprocessProducer**
-**MLProcessConsumer**
-**MLProcessProducer**
-**VisualizationConsumer**
+* **RawDataProducer**
+* **DataPreprocessConsumer**
+* **DataPreprocessProducer**
+* **MLProcessConsumer**
+* **MLProcessProducer**
+* **VisualizationConsumer**
 
 ![image](images/arch.png)
 
