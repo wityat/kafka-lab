@@ -4,8 +4,8 @@ import os
 import time
 
 from consumer import VisualizationConsumer
-from visualizator import plot_data, update_data_with_new_labels
 import streamlit as st
+import matplotlib.pyplot as plt
 
 consumer = VisualizationConsumer(
     ast.literal_eval(os.environ.get("VISUALIZATION_CONSUMER_CONFIG")),
@@ -13,21 +13,50 @@ consumer = VisualizationConsumer(
 )
 
 
+def update_data_with_new_labels(labels):
+    """
+    Обновляет данные для графика на основе новых лейблов.
+    labels - список кортежей вида (label, value)
+    """
+    for label, value in labels:
+        if label in st.session_state.data:
+            st.session_state.data[label] += 1
+        else:
+            st.session_state.data[label] = 1
+
+
+def plot_data():
+    """
+    Создает и отображает график столбцов на основе актуальных данных.
+    """
+    labels = list(st.session_state.data.keys())[:5]
+    values = list(st.session_state.data.values())[:5]
+
+    fig, ax = plt.subplots()
+    ax.bar(labels, values)
+    ax.set_ylabel('Values')
+    ax.set_title('TOP 5 Labels')
+
+    return fig
+
+
 def main():
-    if "elapsed_time" not in st.session_state:
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
         st.session_state.elapsed_time = []
     if 'data' not in st.session_state:
         st.session_state.data = {}
-    st.title("Visualization of Streamed Messages")
+    st.title("Visualization of Image Classification Inference")
+    chart_holder = st.empty()
     chart_holder1 = st.empty()
-    chart_holder2 = st.empty()
     while True:
         message = consumer.consume_data()
         logging.warning("Visualizing new data!")
+        st.session_state.messages.append(message)
         st.session_state.elapsed_time.append(message["elapsed_time"])
         update_data_with_new_labels(message["labels"])
-        chart_holder1.line_chart(st.session_state.elapsed_time)
-        chart_holder2.pyplot(plot_data())
+        chart_holder.line_chart(st.session_state.elapsed_time)
+        chart_holder1.pyplot(plot_data())
         time.sleep(1)
 
 
